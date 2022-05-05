@@ -18,6 +18,6 @@ export default {
    * 统一拼接页面title
    * */
   siteTitle (title: string, contact: boolean = true) {
-      return contact ? title + ' - 品玩': title
+    return contact ? title + ' - 品玩' : title
   }
 }

@@ -290,6 +290,8 @@ $ yarn start:vite # 以 vite 模式启动，等价于 npx ssr start --vite
 
 ![](https://res.wx.qq.com/op_res/sE2C4qCTn9IN1dyiw4MMTEU9dW40eFXbfWe6-o31-kWEJN0ddQKR41_ZbAwAE01oW5yQj4zV3UJ_rVbX0D99Mw)
 
-## 发布
+## 开发
+pnpm install
+npm run dev
 npm run build
 pnpm publish --access public --filter ./packages --no-git-checks

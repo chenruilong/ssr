@@ -25,8 +25,8 @@ export class Index {
     err
       ? this.ctx.setPageInitData({ error: err })
       : this.ctx.setPageInitData({ data: indexData })
-    
-    const stream = await render<Readable>(this.ctx, {stream: true})
+
+    const stream = await render<Readable>(this.ctx, { stream: true })
     this.ctx.body = stream
   }
 
@@ -37,8 +37,8 @@ export class Index {
     err
       ? this.ctx.setPageInitData({ error: err })
       : this.ctx.setPageInitData({ data: detailData })
-    
-    const stream = await render<Readable>(this.ctx, {stream: true})
+
+    const stream = await render<Readable>(this.ctx, { stream: true })
     this.ctx.body = stream
   }
 }

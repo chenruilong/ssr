@@ -1,6 +1,6 @@
 {
   "name": "tiger-plugin-react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "baseVersion": "6.2.15",
   "description": "plugin-react for ssr",
   "main": "./cjs/index.js",

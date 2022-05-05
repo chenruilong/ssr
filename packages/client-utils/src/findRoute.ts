@@ -77,7 +77,7 @@ function findRouteItem (Routes: ReactESMFeRouteItem[], path: string) {
     routeItem = findRoute([route], path)
 
     if (route.routes && route.routes.length > 0) {
-      const {item: childItem, routes: childRoutes} = findRouteItem(route.routes, path)
+      const { item: childItem, routes: childRoutes } = findRouteItem(route.routes, path)
       if (childItem) {
         routeItem = childItem
         list = list.concat(childRoutes)

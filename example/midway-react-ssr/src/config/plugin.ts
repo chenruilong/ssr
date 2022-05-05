@@ -1,5 +1,5 @@
-import { EggPlugin } from 'egg';
+import { EggPlugin } from 'egg'
 
 export default {
-    
+
 } as EggPlugin

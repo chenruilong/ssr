@@ -1,7 +1,7 @@
 import { ReactMidwayKoaFetch } from 'tiger-types-react'
 import { SSRRequestData } from '~/typings/data'
 
-import {render} from '@/utils'
+import { render } from '@/utils'
 import services from '@/services'
 
 const fetch: ReactMidwayKoaFetch = async ({ ctx, routerProps }) => {

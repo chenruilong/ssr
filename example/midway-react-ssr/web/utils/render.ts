@@ -16,10 +16,10 @@ export default {
     if (error instanceof errors.RequestError) {
       switch (error.code) {
         case 404:
-          throw '404'
+          throw new Error('404')
         case 500:
         default:
-          throw '500'
+          throw new Error('500')
       }
     }
   },

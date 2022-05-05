@@ -1,5 +1,5 @@
 import { Provide, Inject, Config, ALL } from '@midwayjs/decorator'
-import {Context} from '@midwayjs/web'
+import { Context } from '@midwayjs/web'
 
 import { ISAIndex } from '~/typings/data'
 
