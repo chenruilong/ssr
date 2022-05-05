@@ -1,7 +1,7 @@
 
 import { join } from 'path'
-import { Mode } from 'ssr-types'
-import { getCwd, loadConfig, getLocalNodeModules, setStyle, addImageChain, loadModuleFromFramework } from 'ssr-server-utils'
+import { Mode } from 'tiger-types'
+import { getCwd, loadConfig, getLocalNodeModules, setStyle, addImageChain, loadModuleFromFramework } from 'tiger-server-utils'
 import * as WebpackChain from 'webpack-chain'
 import * as webpack from 'webpack'
 
@@ -38,6 +38,14 @@ const addBabelLoader = (chain: WebpackChain.Rule<WebpackChain.Module>, envOption
             libraryDirectory: 'lib',
             style: true
           }, 'antd'
+        ],
+        [
+          loadModule('babel-plugin-import'),
+          {
+            libraryName: '@pingfe/brick',
+            libraryDirectory: 'lib',
+            style: true
+          }, '@pingfe/brick'
         ],
         [loadModule('@babel/plugin-proposal-private-methods'), { loose: true }],
         [loadModule('@babel/plugin-proposal-private-property-in-object'), { loose: true }],
@@ -97,7 +105,7 @@ const getBaseConfig = (chain: WebpackChain, isServer: boolean) => {
     .rule('compileBabelForExtraModule')
     .test(/\.(js|mjs|jsx|ts|tsx)$/)
     .include
-    .add([/ssr-plugin-react/, /ssr-client-utils/, /ssr-hoc-react/])
+    .add([/tiger-plugin-react/, /tiger-client-utils/, /tiger-hoc-react/])
 
   let babelForExtraModule
   if (babelExtraModule) {

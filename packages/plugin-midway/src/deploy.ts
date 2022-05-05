@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
-import { getCwd, isFaaS, judgeVersion, logGreen } from 'ssr-server-utils'
-import { Argv } from 'ssr-types'
+import { getCwd, isFaaS, judgeVersion, logGreen } from 'tiger-server-utils'
+import { Argv } from 'tiger-types'
 
 const cwd = getCwd()
 
@@ -10,9 +10,9 @@ const deploy = async (argv: Argv) => {
     logGreen('f.yml is not found, create default template')
     let ymlContent: Buffer
     if (judgeVersion(require(join(cwd, './package.json')).dependencies['@midwayjs/decorator'])?.major === 2) {
-      ymlContent = await fs.readFile(join(cwd, './node_modules/ssr-plugin-midway/src/f.yml'))
+      ymlContent = await fs.readFile(join(cwd, './node_modules/tiger-plugin-midway/src/f.yml'))
     } else {
-      ymlContent = await fs.readFile(join(cwd, './node_modules/ssr-plugin-midway/src/f.koa.yml'))
+      ymlContent = await fs.readFile(join(cwd, './node_modules/tiger-plugin-midway/src/f.koa.yml'))
     }
     await fs.writeFile(join(cwd, './f.yml'), ymlContent)
   }

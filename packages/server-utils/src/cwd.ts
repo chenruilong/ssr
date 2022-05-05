@@ -2,7 +2,7 @@ import { promises, accessSync, realpathSync } from 'fs'
 import { resolve } from 'path'
 import { exec } from 'child_process'
 import { promisify } from 'util'
-import { UserConfig, Json } from 'ssr-types'
+import { UserConfig, Json } from 'tiger-types'
 import { coerce } from 'semver'
 
 const getCwd = () => {
@@ -108,10 +108,10 @@ const judgeFramework = () => {
   const cwd = getCwd()
   const packageJSON = require(resolve(cwd, './package.json'))
   if (packageJSON.dependencies.react || packageJSON.devDependencies.react) {
-    return 'ssr-plugin-react'
+    return 'tiger-plugin-react'
   } else if (packageJSON.dependencies.vue || packageJSON.devDependencies.vue) {
     const version = packageJSON.dependencies.vue || packageJSON.devDependencies.vue
-    return coerce(version)!.major === 3 ? 'ssr-plugin-vue3' : 'ssr-plugin-vue'
+    return coerce(version)!.major === 3 ? 'tiger-plugin-vue3' : 'tiger-plugin-vue'
   } else {
     throw new Error('get framework failed, please check dependencies')
   }
@@ -125,9 +125,9 @@ const judgeServerFramework = () => {
   const cwd = getCwd()
   const packageJSON = require(resolve(cwd, './package.json'))
   if (packageJSON.dependencies['@midwayjs/decorator']) {
-    return 'ssr-plugin-midway'
+    return 'tiger-plugin-midway'
   } else {
-    return 'ssr-plugin-nestjs'
+    return 'tiger-plugin-nestjs'
   }
 }
 
@@ -169,7 +169,7 @@ const accessFileSync = (file: string) => {
 }
 
 const copyReactContext = async () => {
-  await promises.copyFile(resolve(getCwd(), './node_modules/ssr-plugin-react/src/entry/create-context.ts'), resolve(getCwd(), './build/create-context.ts'))
+  await promises.copyFile(resolve(getCwd(), './node_modules/tiger-plugin-react/src/entry/create-context.ts'), resolve(getCwd(), './build/create-context.ts'))
 }
 
 const execPromisify = promisify(exec)

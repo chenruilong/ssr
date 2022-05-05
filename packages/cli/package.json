@@ -1,6 +1,7 @@
 {
-  "name": "ssr",
-  "version": "6.2.13",
+  "name": "tiger-ssr",
+  "version": "1.0.1",
+  "baseVersion": "6.2.13",
   "description": "cli for react/vue2/vue3 ssr deploy on serverless or tradtional web server",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -35,8 +36,8 @@
     "esbuild": "^0.13.14",
     "ora": "^4.0.4",
     "shelljs": "^0.8.3",
-    "ssr-server-utils": "^6.2.10",
-    "ssr-types": "^6.2.3",
+    "tiger-server-utils": "workspace:^1.0.0",
+    "tiger-types": "workspace:^1.0.0",
     "yargs": "^13.2.4"
   },
   "engines": {

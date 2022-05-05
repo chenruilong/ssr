@@ -1,7 +1,14 @@
-import { MidwayConfig } from '@midwayjs/core'
+import { MidwayConfig, MidwayAppInfo } from '@midwayjs/core'
+import {join} from 'path'
 
-export default {
-  // use for cookie sign key, should change to your own and keep security
-  keys: '1650192482948_2252'
-
-} as MidwayConfig
+export default (appInfo: MidwayAppInfo) => {
+    return {
+        keys: 'midway-ssr-app-86293',
+        egg: {
+        static: {
+            prefix: '/',
+            dir: [join(appInfo.appDir, './build'), join(appInfo.appDir, './public'), join(appInfo.appDir, './build/client')]
+            },
+        }
+      } as MidwayConfig
+}

@@ -144,7 +144,7 @@ const commonConfig = (): UserConfig => {
     },
     // @ts-expect-error
     ssr: {
-      external: ['serialize-javascript', 'ssr-server-utils'],
+      external: ['serialize-javascript', 'tiger-server-utils'],
       noExternal: whiteList
     },
     resolve: {

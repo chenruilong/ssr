@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { pathToRegexp } from 'path-to-regexp'
+import { ReactESMFeRouteItem } from 'tiger-types-react'
 
 const cache = {}
 const cacheLimit = 10000
@@ -68,6 +69,32 @@ function findRoute<T extends {path: string}> (Routes: T[], path: string): T {
   return route
 }
 
+function findRouteItem (Routes: ReactESMFeRouteItem[], path: string) {
+  let routeItem = null
+  let list: any = []
+  for (const route of Routes) {
+    list.push(route)
+    routeItem = findRoute([route], path)
+
+    if (route.routes && route.routes.length > 0) {
+      const {item: childItem, routes: childRoutes} = findRouteItem(route.routes, path)
+      if (childItem) {
+        routeItem = childItem
+        list = list.concat(childRoutes)
+        break
+      }
+    }
+    if (routeItem) break
+    list.pop()
+  }
+
+  return {
+    item: routeItem,
+    routes: list
+  }
+}
+
 export {
-  findRoute
+  findRoute,
+  findRouteItem
 }

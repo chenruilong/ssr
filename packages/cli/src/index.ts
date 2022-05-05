@@ -1,2 +1,2 @@
-export * from 'ssr-types'
+export * from 'tiger-types'
 export * from './cli'

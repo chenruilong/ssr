@@ -2,7 +2,7 @@
 import { resolve } from 'path'
 import { fork } from 'child_process'
 import * as yargs from 'yargs'
-import { Argv, IPlugin } from 'ssr-types'
+import { Argv, IPlugin } from 'tiger-types'
 import { generateHtml } from './html'
 import { cleanOutDir } from './clean'
 import { handleEnv } from './preprocess'
@@ -19,7 +19,7 @@ const spinner = {
 }
 
 const startOrBuild = async (argv: Argv, type: 'start' | 'build') => {
-  const { copyReactContext, judgeFramework, judgeServerFramework } = await import('ssr-server-utils')
+  const { copyReactContext, judgeFramework, judgeServerFramework } = await import('tiger-server-utils')
   const framework = judgeFramework()
   const serverFramework = judgeServerFramework()
   if (!argv.api) {
@@ -28,6 +28,7 @@ const startOrBuild = async (argv: Argv, type: 'start' | 'build') => {
     if (client?.name === 'plugin-react') {
       await copyReactContext()
     }
+
     await client?.[type]?.(argv)
   }
   if (!argv.web) {
@@ -48,7 +49,7 @@ const startFunc = async (argv: Argv) => {
   if (!argv.noclean) {
     await cleanOutDir()
   }
-  const { parseFeRoutes, transformConfig } = await import('ssr-server-utils')
+  const { parseFeRoutes, transformConfig } = await import('tiger-server-utils')
   await transformConfig()
   await handleEnv(argv)
   await parseFeRoutes()
@@ -62,7 +63,7 @@ const buildFunc = async (argv: Argv) => {
   if (!argv.noclean) {
     await cleanOutDir()
   }
-  const { parseFeRoutes, transformConfig } = await import('ssr-server-utils')
+  const { parseFeRoutes, transformConfig } = await import('tiger-server-utils')
   await transformConfig()
   await handleEnv(argv)
   await parseFeRoutes()
@@ -72,7 +73,7 @@ const buildFunc = async (argv: Argv) => {
 
 const deployFunc = async (argv: Argv) => {
   process.env.NODE_ENV = 'production'
-  const { judgeServerFramework } = await import('ssr-server-utils')
+  const { judgeServerFramework } = await import('tiger-server-utils')
   const serverFramework = judgeServerFramework()
   const { serverPlugin } = await import(serverFramework)
   const server: IPlugin['serverPlugin'] = serverPlugin()

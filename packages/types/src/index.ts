@@ -14,4 +14,9 @@ export interface ParseFeRouteItem {
   fetch?: string
   component?: string
   webpackChunkName: string
+  // 扩展
+  routes?: ParseFeRouteItem[] // 自路由
+  preload?: boolean // 路由预加载
+  exact?: boolean // 唯一路由
+  meta?: any // 路由附加信息
 }

@@ -18,8 +18,10 @@
     "typeRoots": [ "./typings", "./node_modules/@types"],
     "paths": {
       "@/*": ["./src/*"],
-      "~/*": ["./*"]
-    }
+      "~/*": ["./*"],
+      "@site-packages/*": ["./site-public-packages/*"]
+    },
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src"

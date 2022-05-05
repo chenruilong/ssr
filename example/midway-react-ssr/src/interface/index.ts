@@ -1,7 +1,7 @@
-import { IndexData } from '~/typings/data'
+import { IIndexPageFetchData } from '~/typings/data'
 
 export interface IApiService {
-  index: () => Promise<IndexData>
+  index: () => Promise<IIndexPageFetchData>
 }
 
 export * from './detail'

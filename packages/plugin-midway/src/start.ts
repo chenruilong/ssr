@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { execSync } from 'child_process'
-import { loadConfig, getCwd, judgeVersion } from 'ssr-server-utils'
-import { Argv } from 'ssr-types'
+import { loadConfig, getCwd, judgeVersion } from 'tiger-server-utils'
+import { Argv } from 'tiger-types'
 
 const start = async (argv: Argv) => {
   const { cli } = require('@midwayjs/cli/bin/cli')

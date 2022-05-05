@@ -1,6 +1,7 @@
 {
-  "name": "ssr-types-react",
-  "version": "6.2.8",
+  "name": "tiger-types-react",
+  "version": "1.0.0",
+  "baseVersion": "6.2.8",
   "description": "types for react ssr",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -31,7 +32,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.6",
-    "ssr-types": "^6.2.3"
+    "tiger-types": "workspace:^1.0.0"
   },
   "devDependencies": {
     "concurrently": "^5.1.0"

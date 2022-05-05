@@ -111,6 +111,8 @@ export interface IConfig {
   babelOptions?: RollupBabelInputPluginOptions
   hashRouter?: boolean
   htmlTemplate?: string
+
+  nprogress?: any
 }
 
 export interface proxyOptions {

@@ -1,11 +1,9 @@
 import { promises as fs } from 'fs'
 import { join } from 'path'
-import { ParseFeRouteItem } from 'ssr-types'
-import { getCwd, getPagesDir, getFeDir, accessFile, normalizeStartPath, writeRoutes, transformManualRoutes } from './cwd'
+import { ParseFeRouteItem } from 'tiger-types'
+import { getFeDir, accessFile, normalizeStartPath, writeRoutes } from './cwd'
 import { loadConfig } from './loadConfig'
-
-const pageDir = getPagesDir()
-const cwd = getCwd()
+import { resolve } from 'path'
 
 const getPrefix = () => {
   let { prefix } = loadConfig()
@@ -54,104 +52,6 @@ export const getImageOutputPath = () => {
     publicPath: isDev ? `${normalizePath}${imagePath}` : `${normalizePath}client/${imagePath}`,
     imagePath
   }
-}
-
-const parseFeRoutes = async () => {
-  const { dynamic, routerPriority, routerOptimize, isVite } = loadConfig()
-  const prefix = getPrefix()
-  const isVue = require(join(cwd, './package.json')).dependencies.vue
-  if (isVite && !dynamic) {
-    throw new Error('Vite模式禁止关闭 dynamic ')
-  }
-  let routes = ''
-  // 根据目录结构生成前端路由表
-  const pathRecord = [''] // 路径记录
-  // @ts-expect-error
-  const route: ParseFeRouteItem = {}
-  let arr = await renderRoutes(pageDir, pathRecord, route)
-  if (routerPriority) {
-    // 路由优先级排序
-    arr.sort((a, b) => {
-      // 没有显示指定的路由优先级统一为 0
-      return (routerPriority![b.path] || 0) - (routerPriority![a.path] || 0)
-    })
-  }
-
-  if (routerOptimize) {
-    // 路由过滤
-    if (routerOptimize.include && routerOptimize.exclude) {
-      throw new Error('include and exclude cannot exist synchronal')
-    }
-    if (routerOptimize.include) {
-      arr = arr.filter(route => routerOptimize?.include?.includes(route.path))
-    }
-    if (routerOptimize.exclude) {
-      arr = arr.filter(route => !routerOptimize?.exclude?.includes(route.path))
-    }
-  }
-
-  if (isVue) {
-    const layoutPath = '@/components/layout/index.vue'
-    const layoutFetch = await accessFile(join(getFeDir(), './components/layout/fetch.ts'))
-    const store = await accessFile(join(getFeDir(), './store/index.ts'))
-    const AppPath = '@/components/layout/App'
-    const re = /"webpackChunkName":("(.+?)")/g
-    routes = `
-        // The file is provisional which will be overwrite when restart
-        ${store ? 'import * as store from "@/store/index.ts"' : ''}
-        export const FeRoutes = ${JSON.stringify(arr)} 
-        export { default as Layout } from "${layoutPath}"
-        export { default as App } from "${AppPath}"
-        ${layoutFetch ? 'export { default as layoutFetch } from "@/components/layout/fetch.ts"' : ''}
-        ${store ? 'export { store }' : ''}
-        ${prefix ? `export const PrefixRouterBase='${prefix}'` : ''}
-        `
-    routes = routes.replace(/"component":("(.+?)")/g, (global, m1, m2) => {
-      const currentWebpackChunkName = re.exec(routes)![2]
-      if (dynamic) {
-        return `"component": () => import(/* webpackChunkName: "${currentWebpackChunkName}" */ '${m2.replace(/\^/g, '"')}')`
-      } else {
-        return `"component": require('${m2.replace(/\^/g, '"')}').default`
-      }
-    })
-    re.lastIndex = 0
-    routes = routes.replace(/"fetch":("(.+?)")/g, (global, m1, m2) => {
-      const currentWebpackChunkName = re.exec(routes)![2]
-      return `"fetch": () => import(/* webpackChunkName: "${currentWebpackChunkName}-fetch" */ '${m2.replace(/\^/g, '"')}')`
-    })
-  } else {
-    // React 场景
-    const accessReactApp = await accessFile(join(getFeDir(), './components/layout/App.tsx'))
-    const layoutFetch = await accessFile(join(getFeDir(), './components/layout/fetch.ts'))
-    const accessStore = await accessFile(join(getFeDir(), './store/index.ts'))
-    const re = /"webpackChunkName":("(.+?)")/g
-    routes = `
-        // The file is provisional which will be overwrite when restart
-        export const FeRoutes = ${JSON.stringify(arr)} 
-        ${accessReactApp ? 'export { default as App } from "@/components/layout/App.tsx"' : ''}
-        ${layoutFetch ? 'export { default as layoutFetch } from "@/components/layout/fetch.ts"' : ''}
-        ${accessStore ? 'export * from "@/store/index.ts"' : ''}
-        ${prefix ? `export const PrefixRouterBase='${prefix}'` : ''}
-        `
-    routes = routes.replace(/"component":("(.+?)")/g, (global, m1, m2) => {
-      const currentWebpackChunkName = re.exec(routes)![2]
-      if (dynamic) {
-        return `"component": function dynamicComponent () {
-            return import(/* webpackChunkName: "${currentWebpackChunkName}" */ '${m2.replace(/\^/g, '"')}')
-          }
-          `
-      } else {
-        return `"component": require('${m2.replace(/\^/g, '"')}').default`
-      }
-    })
-    re.lastIndex = 0
-    routes = routes.replace(/"fetch":("(.+?)")/g, (global, m1, m2) => {
-      const currentWebpackChunkName = re.exec(routes)![2]
-      return `"fetch": () => import(/* webpackChunkName: "${currentWebpackChunkName}-fetch" */ '${m2.replace(/\^/g, '"')}')`
-    })
-  }
-  await writeRoutes(routes, 'ssr-declare-routes.js')
-  await transformManualRoutes() // 转换声明式路由
 }
 
 const renderRoutes = async (pageDir: string, pathRecord: string[], route: ParseFeRouteItem): Promise<ParseFeRouteItem[]> => {
@@ -229,6 +129,88 @@ const getDynamicParam = (url: string) => {
   return url.split('$').filter(r => r !== 'render' && r !== '').map(r => r.replace(/\.[\s\S]+/, '').replace('#', '?')).join('/:')
 }
 
+const parseManualRoutes = async () => {
+  const { transform } = await import('esbuild')
+  const { dynamic, isVite, nprogress } = loadConfig()
+  if (isVite && !dynamic) {
+    throw new Error('Vite模式禁止关闭 dynamic ')
+  }
+
+  const declaretiveRoutes = await accessFile(resolve(getFeDir(), './route.ts')) // 是否存在自定义路由
+  const re = /webpackChunkName: ('(.+?)')/g
+
+  let manualRoutes = ''
+  if (declaretiveRoutes) {
+    manualRoutes = (await fs.readFile(resolve(getFeDir(), './route.ts'))).toString()
+  } else {
+    manualRoutes = 'export {}'
+  }
+  
+  manualRoutes = manualRoutes.replace(/component:\s*(['|"](.+?)['|"])/g, (global, m1, m2) => {
+    const paths = m2.replace(/^@\/(pages|components)/, (match: string, $1: string) => $1 === "pages" ? 'p': 'c').split('/').filter((key: string) => key)
+    const currentWebpackChunkName = paths.join('-')
+    const component = m2.replace(/\/$/, '')
+
+    if (dynamic) {
+      return `webpackChunkName: '${currentWebpackChunkName}',
+        component: function dynamicComponent () {
+          return import(/* webpackChunkName: "${currentWebpackChunkName}" */ '${component}/render.tsx')
+        },
+        exact: ${/^@\/components/.test(m2) ? false: true}`
+    } else {
+      return `component: require('${component}/render.tsx').default,
+        exact: ${/^@\/components/.test(m2) ? false: true}`
+    }
+  })
+
+  manualRoutes = manualRoutes.replace(/fetch:\s*(true|false)(,*)/g, (global, m1, m2) => {
+    const currentWebpackChunkName = re.exec(manualRoutes)![2]
+    const component = currentWebpackChunkName.replace(/^(p|c)-/, (match: string, $1: string) => $1 === "p" ? 'pages-': 'components-').replace(/-/g, '/')
+    const webpackChunkName = currentWebpackChunkName.replace(/^(p|c)-/, 'f-')
+    
+    if (m1 === 'true') {
+      return `fetch: function fetch () {
+        return import(/* webpackChunkName: "${webpackChunkName}" */ '@/${component}/fetch.ts')
+      }${m2}`
+    }
+
+    return ''
+  })
+
+  const accessDocument = await accessFile(resolve(getFeDir(), './document.tsx')) // html root
+  const accessApp = await accessFile(resolve(getFeDir(), './app.tsx')) // app
+  const accessErrorPage = await accessFile(join(getFeDir(), './error.tsx')) // global error page
+  const accessAppFetch = await accessFile(resolve(getFeDir(), './fetch.ts')) // app fetch
+  const accessStore = await accessFile(join(getFeDir(), './store/index.ts'))
+  const accessAppConfig = await accessFile(join(getFeDir(), './config/app.ts'))
+
+  manualRoutes = `
+    ${manualRoutes}
+    ${accessDocument ? `export {default as Document} from '@/document.tsx'`: ''}
+    ${accessApp ? `export {default as App} from '@/app.tsx'`: ''}
+    ${accessErrorPage ? `export {default as ErrorPage} from '@/error.tsx'`: ''}
+    ${accessAppFetch ? `export {default as AppFetch} from '@/fetch.ts'`: ''}
+    ${accessStore ? `export * from '@/store/index.ts'`: ''}
+    ${accessAppConfig ? `export {default as appConfig} from '@/config/app.ts'`: ''}
+    ${nprogress ? `export {default as NProgress} from 'nprogress'`: ''}
+    ${nprogress instanceof Object ? `export const NProgressConfig = ${JSON.stringify(nprogress)}`: ''}
+  `
+  // without manualRoutes create emtry object
+  const { code } = await transform(manualRoutes, {
+    loader: 'ts',
+    format: 'esm',
+    keepNames: true
+  })
+
+   // remove empty character and wrapline in vite mode for rollup
+   const serializeCode = code.replace(/(import\([\s\S]*?,)/g, (match) => {
+    return match.replace(/\s/g, '')
+  })
+  
+  await writeRoutes(serializeCode, 'ssr-manual-routes.js')
+  await writeRoutes('export {}', 'ssr-declare-routes.js')
+}
+
 export {
-  parseFeRoutes
+  parseManualRoutes as parseFeRoutes
 }

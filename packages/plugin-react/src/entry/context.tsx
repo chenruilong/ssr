@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useReducer } from 'react'
-import { IProps, Action, IWindow, ReactRoutesType } from 'ssr-types-react'
+import { IProps, Action, IWindow, ReactRoutesType } from 'tiger-types-react'
 
 // @ts-expect-error
 import { STORE_CONTEXT } from '_build/create-context'

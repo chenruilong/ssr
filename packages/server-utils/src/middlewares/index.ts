@@ -1,4 +1,4 @@
-import { proxyOptions } from 'ssr-types'
+import { proxyOptions } from 'tiger-types'
 import { getDevProxyMiddlewaresArr } from './proxy'
 
 const initialSSRDevProxy = async (app: any, options?: proxyOptions) => {

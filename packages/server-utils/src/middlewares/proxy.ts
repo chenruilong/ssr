@@ -1,5 +1,5 @@
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import { proxyOptions } from 'ssr-types'
+import { proxyOptions } from 'tiger-types'
 // @ts-expect-error
 import * as koaConnect from 'koa2-connect'
 import { judgeFramework } from '../cwd'

@@ -1,4 +1,4 @@
-import type { StyleOptions, Config } from 'ssr-types'
+import type { StyleOptions, Config } from 'tiger-types'
 import { loadConfig } from '../loadConfig'
 import { loadModuleFromFramework } from '../cwd'
 

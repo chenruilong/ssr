@@ -1,6 +1,7 @@
 {
-  "name": "ssr-core-react",
-  "version": "6.2.10",
+  "name": "tiger-core-react",
+  "version": "1.0.0",
+  "baseVersion": "6.2.10",
   "description": "react core for react/vue2/vue3 ssr deploy on serverless or tradtional web server",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -35,11 +36,11 @@
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "serialize-javascript": "^6.0.0",
-    "ssr-server-utils": "^6.2.10"
+    "tiger-server-utils": "workspace:^1.0.0"
   },
   "devDependencies": {
     "@types/react-dom": "^17.0.0",
-    "ssr-plugin-react": "^6.0.0",
-    "ssr-types": "^6.0.0"
+    "tiger-plugin-react": "workspace:^1.0.0",
+    "tiger-types": "workspace:^1.0.0"
   }
 }

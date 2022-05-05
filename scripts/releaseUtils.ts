@@ -24,11 +24,10 @@ export const accessFile = async (file: string) => {
   return result
 }
 export const packages = [
-  'cli', 'plugin-vue3', 'plugin-react',
-  'plugin-vue', 'types', 'server-utils',
-  'core-vue', 'hoc-vue3', 'webpack', 'core-react', 'types-react',
-  'client-utils', 'core-vue3', 'plugin-midway', 'plugin-nestjs',
-  'hoc-react'
+  'cli', 'plugin-react',
+  'types', 'server-utils',
+  'webpack', 'core-react', 'types-react',
+  'client-utils', 'plugin-midway', 'hoc-react'
 ]
 
 export function getPackageInfo (pkgName: string) {

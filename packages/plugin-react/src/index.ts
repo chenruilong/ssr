@@ -1,9 +1,10 @@
-import { loadConfig } from 'ssr-server-utils'
+import { loadConfig } from 'tiger-server-utils'
 
 const { isVite } = loadConfig()
 export function clientPlugin () {
   return {
     name: 'plugin-react',
+    test: 1,
     start: async () => {
       if (isVite) {
         const { viteStart } = await import('./tools/vite')

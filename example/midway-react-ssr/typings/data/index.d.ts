@@ -1,2 +1,7 @@
+export * from './common'
+
+export * from './service-api'
+
 export * from './page-index'
-export * from './detail-index'
+export * from './page-detail'
+

@@ -1,6 +1,7 @@
 {
-  "name": "ssr-server-utils",
-  "version": "6.2.14",
+  "name": "tiger-server-utils",
+  "version": "1.0.0",
+  "baseVersion": "6.2.14",
   "description": "utils for serverless ssr",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -34,7 +35,7 @@
     "@types/semver": "^7.3.9",
     "@types/shelljs": "^0.8.7",
     "concurrently": "^5.1.0",
-    "ssr-types": "^6.2.3",
+    "tiger-types": "workspace:^1.0.0",
     "webpack-chain": "^6.4.0"
   },
   "dependencies": {

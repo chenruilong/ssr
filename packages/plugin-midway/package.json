@@ -1,6 +1,7 @@
 {
-  "name": "ssr-plugin-midway",
-  "version": "6.2.12",
+  "name": "tiger-plugin-midway",
+  "version": "1.0.0",
+  "baseVersion": "6.2.12",
   "description": "plugin-midway for ssr",
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -30,13 +31,13 @@
   "homepage": "https://github.com/zhangyuang/ssr#readme",
   "dependencies": {
     "@midwayjs/cli": "^1.0.0",
-    "ssr-server-utils": "^6.2.10"
+    "tiger-server-utils": "workspace:^1.0.0"
   },
   "peerDependencies": {
     "@midwayjs/decorator": ">=2.3.0",
     "@midwayjs/mock": ">=2.0.0"
   },
   "devDependencies": {
-    "ssr-types": "^6.2.3"
+    "tiger-types": "workspace:^1.0.0"
   }
 }

@@ -1,0 +1,3 @@
+[submodule "site-public-packages"]
+	path = site-public-packages
+	url = ssh://git@code.pingcode.tech:8500/SITEC/sitec-site-packages.git

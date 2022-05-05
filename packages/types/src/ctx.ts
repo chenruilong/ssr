@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
 import type { RouterContext } from 'koa-router'
-import type { Context } from '@midwayjs/koa'
+import type { Context } from '@midwayjs/web'
 import type { ICookies, SetOption } from 'cookies'
 
 export interface ExpressContext {

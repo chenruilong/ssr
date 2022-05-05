@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { IConfig } from 'ssr-types'
+import { IConfig } from 'tiger-types'
 import { getCwd, getUserConfig, normalizeStartPath, normalizeEndPath, getFeDir, judgeFramework, loadModuleFromFramework, stringifyDefine, accessFileSync } from './cwd'
 import { coerce } from 'semver'
 
@@ -11,12 +11,12 @@ const loadConfig = (): IConfig => {
   const stream = false
   const isVite = process.env.BUILD_TOOL === 'vite' || accessFileSync(join(cwd, './build/originAsyncChunkMap.json'))
   const isCI = !!process.env.CI_TEST
-  const vue3ServerEntry = join(cwd, './node_modules/ssr-plugin-vue3/esm/entry/server-entry.js')
-  const vue3ClientEntry = join(cwd, './node_modules/ssr-plugin-vue3/esm/entry/client-entry.js')
-  const vueServerEntry = join(cwd, './node_modules/ssr-plugin-vue/esm/entry/server-entry.js')
-  const vueClientEntry = join(cwd, './node_modules/ssr-plugin-vue/esm/entry/client-entry.js')
-  const reactServerEntry = join(cwd, './node_modules/ssr-plugin-react/esm/entry/server-entry.js')
-  const reactClientEntry = join(cwd, './node_modules/ssr-plugin-react/esm/entry/client-entry.js')
+  const vue3ServerEntry = join(cwd, './node_modules/tiger-plugin-vue3/esm/entry/server-entry.js')
+  const vue3ClientEntry = join(cwd, './node_modules/tiger-plugin-vue3/esm/entry/client-entry.js')
+  const vueServerEntry = join(cwd, './node_modules/tiger-plugin-vue/esm/entry/server-entry.js')
+  const vueClientEntry = join(cwd, './node_modules/tiger-plugin-vue/esm/entry/client-entry.js')
+  const reactServerEntry = join(cwd, './node_modules/tiger-plugin-react/esm/entry/server-entry.js')
+  const reactClientEntry = join(cwd, './node_modules/tiger-plugin-react/esm/entry/client-entry.js')
   const supportOptinalChaining = coerce(process.version)!.major >= 14
   const define = userConfig.define ?? {}
   userConfig.define && stringifyDefine(define)
@@ -25,12 +25,12 @@ const loadConfig = (): IConfig => {
     '@': getFeDir(),
     '~': getCwd(),
     _build: join(getCwd(), './build')
-  }, framework === 'ssr-plugin-react' ? {
+  }, framework === 'tiger-plugin-react' ? {
     react: loadModuleFromFramework('react'),
     'react-router': loadModuleFromFramework('react-router'),
     'react-router-dom': loadModuleFromFramework('react-router-dom')
   } : {
-    vue$: framework === 'ssr-plugin-vue' ? 'vue/dist/vue.runtime.esm.js' : 'vue/dist/vue.runtime.esm-bundler.js'
+    vue$: framework === 'tiger-plugin-vue' ? 'vue/dist/vue.runtime.esm.js' : 'vue/dist/vue.runtime.esm-bundler.js'
   }, userConfig.alias)
 
   type ClientLogLevel = 'error'
@@ -184,7 +184,8 @@ const loadConfig = (): IConfig => {
     isVite,
     isCI,
     supportOptinalChaining,
-    define
+    define,
+    progress: false
   }, userConfig)
   config.alias = alias
   config.corejsOptions = corejsOptions

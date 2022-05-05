@@ -22,7 +22,9 @@
     "paths": {
       "@/*": ["./*"],
       "~/*": ["../*"],
-      "_build/*": ["../build/*"]
+      "_build/*": ["../build/*"],
+      "@config": ["./config/development"],
+      "@site-packages/*": ["../site-public-packages/*"]
     }
   },
   "include": [

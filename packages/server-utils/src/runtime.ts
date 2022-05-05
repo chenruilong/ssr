@@ -1,6 +1,6 @@
 import { promises } from 'fs'
 import { resolve } from 'path'
-import { UserConfig, ISSRContext } from 'ssr-types'
+import { UserConfig, ISSRContext } from 'tiger-types'
 import { loadConfig } from './loadConfig'
 import { getCwd } from './cwd'
 
@@ -34,11 +34,17 @@ export const nomalrizeOrder = (order: UserConfig['extraJsOrder'], ctx: ISSRConte
   }
 }
 
-export const getAsyncCssChunk = async (ctx: ISSRContext, webpackChunkName: string): Promise<string[]> => {
+export const getAsyncCssChunk = async (ctx: ISSRContext, webpackChunkName: string, routes: any): Promise<string[]> => {
   const { dynamic, isVite, isDev, cssOrder, extraCssOrder } = loadConfig()
   let dynamicCssOrder = cssOrder.concat(nomalrizeOrder(extraCssOrder, ctx))
   if (dynamic) {
-    dynamicCssOrder = cssOrder.concat([`${webpackChunkName}.css`])
+    dynamicCssOrder = cssOrder.concat(routes.reduce((res: any, route: any) => {
+      if (route.webpackChunkName) {
+        res.push(`${route.webpackChunkName}.css`)
+      }
+      return res
+    }, []))
+    // dynamicCssOrder = cssOrder.concat([`${webpackChunkName}.css`])
     if (!isVite || (isVite && !isDev)) {
       // call it when webpack mode or vite prod mode
       dynamicCssOrder = dynamicCssOrder.concat(await addAsyncChunk(webpackChunkName))

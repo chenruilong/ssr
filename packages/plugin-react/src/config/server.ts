@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { loadConfig, getLocalNodeModules, nodeExternals } from 'ssr-server-utils'
+import { loadConfig, getLocalNodeModules, nodeExternals } from 'tiger-server-utils'
 import * as WebpackChain from 'webpack-chain'
 import * as webpack from 'webpack'
 import { getBaseConfig } from './base'

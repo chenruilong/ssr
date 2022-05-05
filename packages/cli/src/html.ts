@@ -1,13 +1,13 @@
 // @ts-nocheck
 import { promises } from 'fs'
 import { join } from 'path'
-import { Argv } from 'ssr-types'
+import { Argv } from 'tiger-types'
 
 export const generateHtml = async (argv: Argv) => {
   if (process.env.SPA) {
     console.log('当前构建开启 SPA 模式，将生成 html 文件用于独立部署，默认关闭 dynamic 选项')
     // spa 模式下生成 html 文件直接部署
-    const { loadConfig, getCwd, judgeFramework, loadModuleFromFramework } = await import('ssr-server-utils')
+    const { loadConfig, getCwd, judgeFramework, loadModuleFromFramework } = await import('tiger-server-utils')
     const { jsOrder, cssOrder, customeHeadScript, customeFooterScript, hashRouter, htmlTemplate } = loadConfig()
     const htmlStr = htmlTemplate ?? `
   <!DOCTYPE html>

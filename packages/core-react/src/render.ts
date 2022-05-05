@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { renderToString, renderToNodeStream } from 'react-dom/server'
-import { loadConfig, getCwd, StringToStream, mergeStream2 } from 'ssr-server-utils'
-import { ISSRContext, UserConfig, ExpressContext, IConfig } from 'ssr-types'
+import { loadConfig, getCwd, StringToStream, mergeStream2 } from 'tiger-server-utils'
+import { ISSRContext, UserConfig, ExpressContext, IConfig } from 'tiger-types'
 import type { ViteDevServer } from 'vite'
 
 const cwd = getCwd()
@@ -37,7 +37,7 @@ async function viteRender (ctx: ISSRContext, config: IConfig) {
   let serverRes
   if (isDev) {
     const { createServer } = await import('vite')
-    const { serverConfig } = await import('ssr-plugin-react')
+    const { serverConfig } = await import('tiger-plugin-react')
     viteServer = !viteServer ? await createServer(serverConfig) : viteServer
     const { serverRender } = await (viteServer as ViteDevServer).ssrLoadModule(reactServerEntry)
     serverRes = await serverRender(ctx, config)

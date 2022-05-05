@@ -2,7 +2,7 @@
 // The file is provisional，don't depend on it
 
 import React, { Context } from 'react'
-import { IContext } from 'ssr-types-react'
+import { IContext } from 'tiger-types-react'
 
 let STORE_CONTEXT: Context<IContext>
 if (__isBrowser__) {
