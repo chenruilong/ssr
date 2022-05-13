@@ -55,7 +55,7 @@ class Entry extends React.Component<IEntryProps, any> {
   prevLocation: any
 
   hasRender: undefined | boolean = window.__USE_SSR__
-  
+
   routeFetchData: any // 当前路由fetch数据
   routeCacheKeys: any // 当前路由需要缓存的fetch key
   routeInitScrollInfo: any // 路由滚动条初始位置
@@ -147,19 +147,15 @@ class Entry extends React.Component<IEntryProps, any> {
         route.component.appFetch = AppFetch
         const WrappedComponent = wrapComponent.call(this as any, route.component)
         const subRoutes = route.routes ? this.RenderRoute(route.routes): null
-        
+
         return (
           <Route exact={route?.exact ?? false} key={route.path} path={route.path} render={() => {
             return (
-              <>
-                {
-                  route.routes && route.routes.length > 0 ? (
-                    <WrappedComponent key={route.path} children={subRoutes} route={route} isPageComponent={false} />
-                  ): (
-                    <WrappedComponent key={window.location.pathname} route={route} isPageComponent={true} />
-                  )
-                }
-              </>
+              route.routes && route.routes.length > 0 ? (
+                <WrappedComponent key={route.path} children={subRoutes} route={route} isPageComponent={false} />
+              ): (
+                <WrappedComponent key={window.location.pathname} route={route} isPageComponent={true} />
+              )
             )
           }}/>
         )

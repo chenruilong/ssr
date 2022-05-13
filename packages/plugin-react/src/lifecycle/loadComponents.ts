@@ -8,13 +8,11 @@ export default function loadComponent (this: ILifecycleKernal) {
 
         res.push(new Promise<void>(resolve => {
           component().then((com: any) => {
-            console.log({ com })
             route.component = com.default
             route.component.fetch = fetch
             route.component.appFetch = appFetch
             resolve()
           })
-          // route.component = (await component()).default
         }))
       }
       return res
