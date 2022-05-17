@@ -13,7 +13,7 @@ import { STORE_CONTEXT as Context } from '_build/create-context'
 // @ts-expect-error
 import Document from '@/document.tsx'
 import { Routes } from './create-router'
-import {Error as ErrorPage} from 'tiger-hoc-react'
+import { Error as ErrorPage } from 'tiger-hoc-react'
 
 const { FeRoutes, AppFetch, App, PrefixRouterBase, state, appConfig } = Routes as ReactRoutesType
 const serialize = serializeWrap.default || serializeWrap
@@ -28,7 +28,7 @@ const serverRender = async (ctx: ISSRContext, config: IConfig): Promise<React.Re
 
   // const routeItem = findRouteItem(FeRoutes, path)
   // const routeItem = findRoute(FeRoutes as ReactESMFeRouteItem[], path)
-  const {item: routeItem, routes} = findRouteItem(FeRoutes as ReactESMFeRouteItem[], path)
+  const { item: routeItem, routes } = findRouteItem(FeRoutes as ReactESMFeRouteItem[], path)
   if (!routeItem) {
     throw new Error(`
     With Path: ${path} search component failed
@@ -92,15 +92,15 @@ const serverRender = async (ctx: ISSRContext, config: IConfig): Promise<React.Re
   try {
     if (!isCsr) {
       // const currentFetch = fetch ? (await fetch()).default : null
-  
+
       // csr 下不需要服务端获取数据
       if (parallelFetch) {
         [appFetchData, fetchData] = await Promise.all([
           AppFetch ? AppFetch({ ctx }) : Promise.resolve({}),
-          ...routes.map((route: ReactESMFeRouteItem) => new Promise(async (resolve) => {
+          ...routes.map(async (route: ReactESMFeRouteItem) => await new Promise(async (resolve) => {
             const currentFetch = route.fetch ? (await route.fetch()).default : null
             if (currentFetch) {
-              const data = await currentFetch({ctx})
+              const data = await currentFetch({ ctx })
               resolve(data)
             } else {
               resolve({})
@@ -113,28 +113,28 @@ const serverRender = async (ctx: ISSRContext, config: IConfig): Promise<React.Re
         // ])
       } else {
         appFetchData = AppFetch ? await AppFetch({ ctx }) : {}
-        for (let route of routes) {
+        for (const route of routes) {
           const currentFetch = route.fetch ? (await route.fetch()).default : null
           let data = {}
           if (currentFetch) {
-            data = await currentFetch({ctx})
+            data = await currentFetch({ ctx })
           }
-  
-          fetchData = {...fetchData, ...data}
+
+          fetchData = { ...fetchData, ...data }
         }
         // layoutFetchData = AppFetch ? await AppFetch({ ctx }) : {}
         // fetchData = currentFetch ? await currentFetch({ ctx }) : {}
       }
     }
-  } catch(e) {
-    // @ts-ignore
+  } catch (e) {
+    // @ts-expect-error
     ctx?.logger.error(e)
     pageErrorInfo = {
       code: 500,
-      message: "服务异常, 请稍候再试"
+      message: '服务异常, 请稍候再试'
     }
   }
-  const combineData = isCsr ? null : Object.assign(state ?? {}, appFetchData ?? {}, fetchData ?? {}, pageErrorInfo ? {pageErrorInfo}: {})
+  const combineData = isCsr ? null : Object.assign(state ?? {}, appFetchData ?? {}, fetchData ?? {}, pageErrorInfo ? { pageErrorInfo } : {})
   // const combineData = isCsr ? null : Object.assign(state ?? {}, appFetchData ?? {}, fetchData ?? {})
   const injectState = isCsr ? null : <script dangerouslySetInnerHTML={{
     __html: `window.__USE_SSR__=true; window.__INITIAL_DATA__ =${serialize(combineData)}; ${base && `window.prefix="${base}"`};${clientPrefix && `window.clientPrefix="${clientPrefix}"`}`
@@ -156,7 +156,7 @@ const serverRender = async (ctx: ISSRContext, config: IConfig): Promise<React.Re
 function head (data: any) {
   return (props: any) => {
     if (!data) {
-      const {title, description, keywords} = appConfig?.siteInfo ?? {}
+      const { title, description, keywords } = appConfig?.siteInfo ?? {}
       return (
         <Helmet>
           {title && <title>{title}</title>}
@@ -166,7 +166,7 @@ function head (data: any) {
       )
     }
 
-    const {title, description, keywords, raw}: IPageHead = data(props.state)
+    const { title, description, keywords, raw }: IPageHead = data(props.state)
 
     return (
       <Helmet>
@@ -189,26 +189,26 @@ async function RenderRouter (routes: any = [], isCsr: boolean, ctx: any, combine
 
   const Component = (await route.component()).default as any
   const isPageComponent = !route.routes || route.routes.length <= 0
-  const subRoute = !isPageComponent ? await RenderRouter(routes, isCsr, ctx, combineData, pageErrorInfo): null
+  const subRoute = !isPageComponent ? await RenderRouter(routes, isCsr, ctx, combineData, pageErrorInfo) : null
 
   if (isPageComponent) {
     const Head = head(Component?.Head)
     await renderToStaticMarkup(<Head state={combineData} />)
-    const helmet = Helmet.renderStatic();
+    const helmet = Helmet.renderStatic()
     const injectHead = [
       helmet.title.toComponent(),
       helmet.meta.toComponent(),
       helmet.link.toComponent(),
       helmet.style.toComponent(),
-      helmet.script.toComponent(),
+      helmet.script.toComponent()
     ]
     ctx.injectHead = injectHead
   }
 
   return (
-    isPageComponent ?
-      pageErrorInfo ? <ErrorPage {...pageErrorInfo} />: <Component route={route} path={ctx.path} isReady={true} /> :
-      <Component isReady={true} route={route} path={ctx.path} children={subRoute} />
+    isPageComponent
+      ? pageErrorInfo ? <ErrorPage {...pageErrorInfo} /> : <Component route={route} path={ctx.path} isReady={true} />
+      : <Component isReady={true} route={route} path={ctx.path} children={subRoute} />
   )
 }
 export {

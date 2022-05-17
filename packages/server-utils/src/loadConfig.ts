@@ -74,7 +74,7 @@ const loadConfig = (): IConfig => {
 
   const useHash = !isDev // 生产环境默认生成hash
 
-  const whiteList: RegExp[] = [/\.(css|less|sass|scss)$/, /vant.*?style/, /@pingfe\/brick.*?style/, /antd.*?style/, /ant-design-vue.*?(style)/, /store$/]
+  const whiteList: RegExp[] = [/\.(css|less|sass|scss)$/, /vant.*?style/, /tiger-hoc-react/, /@pingfe\/brick.*?style/, /antd.*?style/, /ant-design-vue.*?(style)/, /store$/]
 
   const jsOrder = isVite ? [`${chunkName}.js`] : [`runtime~${chunkName}.js`, 'vendor.js', `${chunkName}.js`]
 
