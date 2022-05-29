@@ -1,6 +1,6 @@
 {
   "name": "tiger-server-utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "baseVersion": "6.2.14",
   "description": "utils for serverless ssr",
   "main": "./cjs/index.js",

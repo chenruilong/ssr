@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { BrowserRouter, Route, Switch, Prompt, matchPath } from 'react-router-dom'
 // @ts-expect-error
-import { createBrowserHistory } from "history"
+import { createBrowserHistory } from 'history'
 import { preloadComponent, findRouteItem } from 'tiger-client-utils'
 import { wrapComponent } from 'tiger-hoc-react'
 import { DocumentProps, ReactRoutesType, ReactESMFeRouteItem, ReactESMPreloadFeRouteItem } from 'tiger-types-react'
@@ -10,9 +10,9 @@ import { Routes } from './create-router'
 import { AppContext } from './context'
 import { setCache } from './cache'
 import LifeCycleMiddleware from '../lifecycle'
-import initMiddleware from "../lifecycle/init"
-import loadingMiddleware from "../lifecycle/loading"
-import preloadMiddleware from "../lifecycle/preload"
+import initMiddleware from '../lifecycle/init'
+import loadingMiddleware from '../lifecycle/loading'
+import preloadMiddleware from '../lifecycle/preload'
 import renderRouteMiddleware from '../lifecycle/renderRoute'
 import loadComponentMiddleware from '../lifecycle/loadComponents'
 
@@ -41,8 +41,6 @@ if (!window.__disableClientRender__) {
   clientRender()
 }
 
-
-
 class Entry extends React.Component<IEntryProps, any> {
   progress: any
 
@@ -62,11 +60,11 @@ class Entry extends React.Component<IEntryProps, any> {
 
   isAppFetch: boolean = false
 
-  constructor(props: IEntryProps) {
+  constructor (props: IEntryProps) {
     super(props)
 
     // 初始化SSR
-    const {item: routeItem} = findRouteItem(FeRoutes as ReactESMFeRouteItem[], window.location.pathname)
+    const { item: routeItem } = findRouteItem(FeRoutes as ReactESMFeRouteItem[], window.location.pathname)
     this.route = this.prevRoute = routeItem
     this.location = this.prevLocation = {
       pathname: window.location.pathname,
@@ -82,7 +80,7 @@ class Entry extends React.Component<IEntryProps, any> {
       this.progress.configure(NProgressConfig)
     }
 
-    setCache(this.location.pathname + (this.location?.key ?? ""), {})
+    setCache(this.location.pathname + (this.location?.key ?? ''), {})
 
     // 初始路由数据
     if (window.__INITIAL_DATA__) {
@@ -92,20 +90,21 @@ class Entry extends React.Component<IEntryProps, any> {
     }
   }
 
-  shouldComponentUpdate() {
+  shouldComponentUpdate () {
     return false
   }
 
-  private message(location: any, action: any) {
+  private message (location: any, action: any) {
     return JSON.stringify({
       location,
       action
     })
   }
-    /**
+
+  /**
    * 处理路由跳转
    */
-  public getUserConfirmation(message: string, callback: any) {
+  public getUserConfirmation (message: string, callback: any) {
     // 初始化生命周期
     const app = new LifeCycleMiddleware()
 
@@ -127,7 +126,7 @@ class Entry extends React.Component<IEntryProps, any> {
     app.listen()
   }
 
-  getFetchProps(pathname: string, route: string) {
+  getFetchProps (pathname: string, route: string) {
     const history = createBrowserHistory({
       basename: this.props.baseName,
       getUserConfirmation: this.getUserConfirmation.bind(this)
@@ -139,31 +138,32 @@ class Entry extends React.Component<IEntryProps, any> {
     }
   }
 
-  private RenderRoute(routes: ReactESMFeRouteItem[]) {
+  private RenderRoute (routes: ReactESMFeRouteItem[]) {
     return (
-    <Switch>
-      {routes.map(route => {
-        route.component.fetch = route.fetch
-        route.component.appFetch = AppFetch
-        const WrappedComponent = wrapComponent.call(this as any, route.component)
-        const subRoutes = route.routes ? this.RenderRoute(route.routes): null
-
-        return (
-          <Route exact={route?.exact ?? false} key={route.path} path={route.path} render={() => {
-            return (
-              route.routes && route.routes.length > 0 ? (
-                <WrappedComponent key={route.path} children={subRoutes} route={route} isPageComponent={false} />
-              ): (
-                <WrappedComponent key={window.location.pathname} route={route} isPageComponent={true} />
+      <Switch>
+        {routes.map(route => {
+          route.component.fetch = route.fetch
+          route.component.appFetch = AppFetch
+          const WrappedComponent = wrapComponent.call(this as any, route.component)
+          const subRoutes = route.routes ? this.RenderRoute(route.routes) : null
+          console.log(route.path)
+          return (
+            <Route exact={route?.exact ?? false} key={route.path} path={route.path} render={() => {
+              return (
+                route.routes && route.routes.length > 0 ? (
+                  <WrappedComponent key={route.path} children={subRoutes} route={route} isPageComponent={false} />
+                ) : (
+                  <WrappedComponent key={window.location.pathname} route={route} isPageComponent={true} />
+                )
               )
-            )
-          }}/>
-        )
-      })}
-    </Switch>
-  )
+            }}/>
+          )
+        })}
+      </Switch>
+    )
   }
-  render() {
+
+  render () {
     return (
       <BrowserRouter basename={this.props.baseName} getUserConfirmation={this.getUserConfirmation.bind(this)}>
         <Prompt message={this.message} />

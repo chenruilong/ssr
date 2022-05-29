@@ -156,10 +156,10 @@ const parseManualRoutes = async () => {
         component: function dynamicComponent () {
           return import(/* webpackChunkName: "${currentWebpackChunkName}" */ '${component}/render.tsx')
         },
-        exact: ${!/^@\/components/.test(m2)}`
+        exact: ${!/\/layout/.test(m2)}`
     } else {
       return `component: require('${component}/render.tsx').default,
-        exact: ${!/^@\/components/.test(m2)}`
+        exact: ${!/\/layout/.test(m2)}`
     }
   })
 
